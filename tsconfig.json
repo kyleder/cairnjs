@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "strict": true,
+    "lib": ["esnext"],
+    "types": ["node", "jest"],
+    "experimentalDecorators": true
+  },
+  "include": ["**/src/**/*.ts"]
+}

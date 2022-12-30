@@ -1,0 +1,26 @@
+{
+  "name": "@apps/basic",
+  "version": "1.0.0",
+  "description": "Basic example",
+  "author": "Simon Babay",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "nodemon src/index.ts",
+    "build": "tsup src/index.ts --sourcemap",
+    "start": "node dist/index.cjs"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "src/",
+      "../../packages/**/src/"
+    ],
+    "execMap": {
+      "ts": "node -r esbuild-register -r tsconfig-paths/register"
+    }
+  },
+  "dependencies": {
+    "@lib/core": "workspace:*",
+    "source-map-support": "^0.5.20"
+  }
+}
