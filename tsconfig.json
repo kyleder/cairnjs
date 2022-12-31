@@ -11,7 +11,8 @@
     "strict": true,
     "lib": ["esnext"],
     "types": ["node", "jest"],
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "jsx": "react-jsx"
   },
-  "include": ["**/src/**/*.ts"]
+  "include": ["**/src/**/*.ts", "**/src/**/*.tsx"]
 }

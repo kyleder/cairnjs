@@ -1,0 +1,24 @@
+{
+  "name": "@cairnjs/react-native-navigation",
+  "version": "0.1.0",
+  "description": "CairnJS React Native Default Navigation Library",
+  "author": "Kyle Derkacz",
+  "license": "MIT",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@cairnjs/core": "workspace:*",
+    "@react-navigation/native": "^6.1.1",
+    "@react-navigation/native-stack": "^6.9.7",
+    "lodash": "^4.17.21",
+    "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.191"
+  }
+}

@@ -1,12 +1,12 @@
 {
-  "name": "ts-monorepo-starter",
-  "version": "1.0.0",
+  "name": "cairnjs",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "prepare": "is-ci || husky install",
     "lint": "eslint '**/src/**/*.{js,ts}'"
   },
-  "author": "Simon Babay",
+  "author": "Kyle Derkacz",
   "license": "MIT",
   "devDependencies": {
     "@types/eslint": "^7.28.0",

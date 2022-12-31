@@ -1,14 +1,29 @@
 {
-  "name": "@lib/core",
-  "version": "1.0.0",
-  "description": "Lib core",
-  "author": "Simon Babay",
+  "name": "@cairnjs/core",
+  "version": "0.1.0",
+  "description": "CairnJS Core Library",
+  "author": "Kyle Derkacz",
   "license": "MIT",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "dependencies": {
+    "react": "^18.2.0",
+    "reflect-metadata": "^0.1.13"
+  },
+  "peerDependencies": {
+    "@cairnjs/navigation": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@cairnjs/navigation": {
+      "optional": true
+    }
+  },
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap",
     "test": "jest"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.26"
   }
 }
