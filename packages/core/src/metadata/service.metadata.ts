@@ -1,1 +1,1 @@
-export const SERVICE_WATERMARK = '__service__';
+export const SERVICE_TYPE = 'cairnjs.core.service';

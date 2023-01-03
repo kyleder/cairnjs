@@ -4,8 +4,20 @@
  *
  * @format
  */
+const {makeMetroConfig} = require('@rnx-kit/metro-config');
+const MetroSymlinksResolver = require('@rnx-kit/metro-resolver-symlinks');
+const findUp = require('find-up');
+const path = require('path');
+const defaultSourceExts =
+  require('metro-config/src/defaults/defaults').sourceExts;
 
-module.exports = {
+const getRepoRoot = () => {
+  return path.dirname(findUp.sync('pnpm-workspace.yaml'));
+};
+
+const repoRoot = getRepoRoot();
+
+module.exports = makeMetroConfig({
   transformer: {
     getTransformOptions: async () => ({
       transform: {
@@ -14,4 +26,10 @@ module.exports = {
       },
     }),
   },
-};
+  projectRoot: __dirname,
+  resolver: {
+    resolveRequest: MetroSymlinksResolver(),
+    sourceExts: [...defaultSourceExts, 'cjs'],
+  },
+  watchFolders: [getRepoRoot()],
+});

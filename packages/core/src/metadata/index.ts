@@ -1,6 +1,8 @@
 import 'reflect-metadata';
 
-export * from './screen.metadata';
+export * from './gateway.metadata';
 export * from './service.metadata';
-
 export * from './metadata.service';
+export * from './module.metadata';
+
+export const DEPENDENCY_TYPE = 'cairnjs.type';

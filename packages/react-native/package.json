@@ -4,7 +4,7 @@
   "description": "CairnJS React Native Application Library",
   "author": "Kyle Derkacz",
   "license": "MIT",
-  "main": "dist/index.cjs",
+  "main": "dist/index.mjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -13,6 +13,12 @@
   },
   "dependencies": {
     "@cairnjs/core": "workspace:*",
-    "@cairnjs/react-native-navigation": "workspace:*"
+    "@cairnjs/react-native-navigation": "workspace:*",
+    "url": "^0.11.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.9",
+    "@babel/runtime": "^7.12.5",
+    "classCallCheck": "link:@babel/runtime/helpers/classCallCheck"
   }
 }

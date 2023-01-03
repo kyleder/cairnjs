@@ -1,10 +1,10 @@
-import { SERVICE_WATERMARK } from '../../metadata/';
+import { DEPENDENCY_TYPE, MetadataService, SERVICE_TYPE } from '../metadata/';
 
 export function Service(): ClassDecorator;
 export function Service(prefix: string | string[]): ClassDecorator;
 
 export function Service(prefixOrOptions?: string | string[]): ClassDecorator {
   return (target: any) => {
-    Reflect.defineMetadata(SERVICE_WATERMARK, true, target);
+    MetadataService.setMetadata(target, DEPENDENCY_TYPE, SERVICE_TYPE);
   };
 }

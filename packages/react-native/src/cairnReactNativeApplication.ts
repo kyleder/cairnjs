@@ -3,7 +3,7 @@ import { CairnStack } from '@cairnjs/core';
 import type { ILoggerService } from '@cairnjs/core';
 import type { INavigatorService } from '@cairnjs/react-native-navigation';
 
-export class CairnApplication {
+export class CairnReactNativeApplication {
   private appComponent: ComponentType<any> | null = null;
   private loggers: ILoggerService[] = [];
 

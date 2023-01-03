@@ -5,11 +5,11 @@
 import {AppRegistry} from 'react-native';
 import App from './App';
 import {name as appName} from './app.json';
-import {CairnFactory} from '@cairnjs/react-native';
+import {CairnReactNativeFactory} from '@cairnjs/react-native';
 import {AppModule} from './src/app.module';
 
 async function bootstrap(): Promise<void> {
-  const app = CairnFactory.create(AppModule);
+  const app = CairnReactNativeFactory.create(AppModule);
   AppRegistry.registerComponent(appName, () => App);
 }
 

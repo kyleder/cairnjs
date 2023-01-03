@@ -4,12 +4,13 @@
   "description": "CairnJS Core Library",
   "author": "Kyle Derkacz",
   "license": "MIT",
-  "main": "dist/index.cjs",
+  "main": "dist/index.mjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
     "react": "^18.2.0",
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "url": "^0.11.0"
   },
   "peerDependencies": {
     "@cairnjs/navigation": "workspace:*"
@@ -24,6 +25,9 @@
     "test": "jest"
   },
   "devDependencies": {
-    "@types/react": "^18.0.26"
+    "@babel/core": "^7.12.9",
+    "@babel/runtime": "^7.12.5",
+    "@types/react": "^18.0.26",
+    "lodash": "^4.17.21"
   }
 }
