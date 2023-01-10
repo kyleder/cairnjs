@@ -12,7 +12,7 @@
   "dependencies": {
     "@cairnjs/core": "workspace:*",
     "@cairnjs/react-native": "workspace:*",
-    "@cairnjs/react-native-navigation": "workspace:*",
+    "@cairnjs/module-react-navigation": "workspace:*",
     "react": "18.1.0",
     "react-native": "0.70.6"
   },

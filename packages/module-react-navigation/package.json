@@ -1,5 +1,5 @@
 {
-  "name": "@cairnjs/react-native-navigation",
+  "name": "@cairnjs/module-react-navigation",
   "version": "0.1.0",
   "description": "CairnJS React Native Default Navigation Library",
   "author": "Kyle Derkacz",

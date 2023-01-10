@@ -1,1 +1,1 @@
-export const COMPONENT_WATERMARK = '__component__';
+export const COMPONENT_TYPE = 'cairnjs.react-native.component';

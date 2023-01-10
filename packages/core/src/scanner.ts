@@ -1,12 +1,37 @@
 import { flatten, uniq } from 'lodash';
-import { DEPENDENCY_TYPE, MODULE_TYPE, MODULE_OPTIONS, MetadataService } from './metadata';
-import { IModule, IStone, TDependency } from './types';
+import { DEPENDENCY_TYPE, MODULE_TYPE, MetadataService } from './metadata';
+import { IModule, IStone, TDependency, TModuleOptions } from './types';
+
+const excludedDependencyOptions = ['exports', 'imports'];
 
 export class Scanner {
-  public scanForAllDependencies(rootModule: IModule): Array<IModule | IStone> {
+  public scanForAllDependencies(
+    rootModule: IModule,
+    moduleOptions: TModuleOptions,
+  ): Array<IModule | IStone> {
     const allModules = this.scanForAllModules(rootModule);
 
-    return [];
+    const optionsToCheck = Object.keys(moduleOptions).filter(
+      (option) => !excludedDependencyOptions.includes(option),
+    );
+
+    return allModules.reduce((allDependencies: TDependency[], module) => {
+      let newDependencies = [...allDependencies];
+      if (!allDependencies.includes(module)) {
+        newDependencies.push(module);
+      }
+      const moduleMetadataKeys = MetadataService.getMetadataKeys(module);
+
+      for (let option of optionsToCheck) {
+        if (moduleMetadataKeys.includes(option)) {
+          // TODO: This shouldn't assume that all options are an array of dependencies
+          const dependencies = MetadataService.getMetadata(module, option);
+          newDependencies = newDependencies.concat(dependencies);
+        }
+      }
+
+      return uniq(newDependencies);
+    }, []);
   }
 
   private scanForAllModules(module: TDependency): IModule[] {
@@ -14,7 +39,7 @@ export class Scanner {
       return [];
     }
 
-    const importedDependencies = MetadataService.getMetadata(module, MODULE_OPTIONS.IMPORTS) || [];
+    const importedDependencies = MetadataService.getMetadata(module, 'imports') || [];
 
     return importedDependencies.reduce(
       (allDependencies: TDependency[], dependency: TDependency) => {

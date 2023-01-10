@@ -1,1 +1,1 @@
-export const CONTEXT_WATERMARK = '__context__';
+export const CONTEXT_TYPE = 'cairnjs.react-native.context';

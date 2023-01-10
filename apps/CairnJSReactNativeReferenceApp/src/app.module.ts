@@ -1,7 +1,7 @@
-import {Module} from '@cairnjs/core';
+import {IModule, Module} from '@cairnjs/core';
 import {EnrollmentModule} from './features/enrollment';
 
 @Module({
   imports: [EnrollmentModule],
 })
-export class AppModule {}
+export class AppModule implements IModule {}

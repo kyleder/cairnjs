@@ -6,3 +6,4 @@ export * from './metadata.service';
 export * from './module.metadata';
 
 export const DEPENDENCY_TYPE = 'cairnjs.type';
+export const DEPENDENCY_ID = 'cairnjs.id';

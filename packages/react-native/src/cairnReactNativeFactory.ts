@@ -1,15 +1,15 @@
 import { CairnReactNativeApplication } from './cairnReactNativeApplication';
 import { CairnStack } from '@cairnjs/core';
-import { ReactNavigationNavigatorService } from '@cairnjs/react-native-navigation';
+import { ReactNativeDependencyTypes } from './metadata';
 
 class CairnReactNativeFactoryStatic {
   public async create(module: any): Promise<CairnReactNativeApplication> {
-    // const applicationConfig = new ApplicationConfig();
-    const stack = new CairnStack(module);
+    const stack = new CairnStack();
+    stack.addModuleDependencyTypes(ReactNativeDependencyTypes);
 
-    const navigator = new ReactNavigationNavigatorService();
+    stack.initialize(module);
 
-    const app = new CairnReactNativeApplication(stack, navigator);
+    const app = new CairnReactNativeApplication(stack);
     return app;
   }
 }

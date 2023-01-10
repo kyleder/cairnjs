@@ -15,8 +15,6 @@ const getRepoRoot = () => {
   return path.dirname(findUp.sync('pnpm-workspace.yaml'));
 };
 
-const repoRoot = getRepoRoot();
-
 module.exports = makeMetroConfig({
   transformer: {
     getTransformOptions: async () => ({

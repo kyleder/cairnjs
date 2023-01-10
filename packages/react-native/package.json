@@ -13,7 +13,10 @@
   },
   "dependencies": {
     "@cairnjs/core": "workspace:*",
-    "@cairnjs/react-native-navigation": "workspace:*",
+    "@cairnjs/module-react-navigation": "workspace:*",
+    "react": "^18.2.0",
+    "react-native": "0.70.6",
+    "react-native-get-random-values": "^1.8.0",
     "url": "^0.11.0"
   },
   "devDependencies": {
