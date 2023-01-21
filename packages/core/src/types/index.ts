@@ -1,3 +1,4 @@
+import { CairnStack } from '../cairnStack';
 import { IModule } from './module.type';
 import { IStone } from './stone.type';
 
@@ -7,4 +8,8 @@ export * from './module.type';
 export * from './service.type';
 export * from './stone.type';
 
-export type TDependency = IModule | IStone;
+export type TDependency = IModule | IStone | CairnStack;
+
+export interface Context {
+  readonly id: number;
+}

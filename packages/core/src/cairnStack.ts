@@ -1,14 +1,16 @@
-import { intersection } from 'lodash';
-import { DEPENDENCY_ID, MetadataService, MODULE_OPTIONS } from './metadata';
+import { pick } from 'lodash';
+import { DEPENDENCY_TYPE, MetadataService, MODULE_OPTIONS } from './metadata';
 import { Scanner } from './scanner';
-import { IModule, TDependency, TModuleOptions } from './types';
+import { IModule, TDependency, TModuleOptionDefinitions } from './types';
+import { Injectable } from './decorators';
+import { UuidService } from './services';
 
 type StackRegistry = {
   [itemId: string]: TDependency;
 };
 
 type StackRegistryByType = {
-  [type: string]: string;
+  [type: string]: string[];
 };
 
 /**
@@ -16,6 +18,7 @@ type StackRegistryByType = {
  * instanciate, and provide access to all of the dependencies that have been registered throughout
  * the app.
  */
+@Injectable()
 export class CairnStack {
   private scanner: Scanner;
   private stack: StackRegistry = {};
@@ -29,8 +32,12 @@ export class CairnStack {
   }
 
   public initialize(rootModule: IModule): void {
+    // This is a special case where, in order to make the stack available for injection, it needs
+    // to be registered in an abnormal way.
+    this.addDependency(this);
     this.rootModule = rootModule;
     this.scan();
+    this.initializeAllDependencies();
   }
 
   /**
@@ -39,7 +46,7 @@ export class CairnStack {
    * stack's registry and will be available throughout the application.
    * @param additionalTypes
    */
-  public addModuleDependencyTypes(additionalTypes: TModuleOptions = {}): void {
+  public addModuleDependencyTypes(additionalTypes: TModuleOptionDefinitions = {}): void {
     this.moduleOptions = { ...this.moduleOptions, ...additionalTypes };
   }
 
@@ -70,15 +77,26 @@ export class CairnStack {
       this.moduleOptions,
     );
     allDependencies.forEach(this.addDependency);
-    console.log(this.stack);
   }
 
+  private initializeDependency(dependency: TDependency) {}
+
+  private initializeAllDependencies(): void {}
+
   private addDependency = (dependency: TDependency): void => {
-    const dependencyId = MetadataService.getMetadata(dependency, DEPENDENCY_ID);
+    const dependencyId = UuidService.generateUniqueId();
+    const dependencyType = MetadataService.getMetadata(dependency, DEPENDENCY_TYPE);
     this.stack[dependencyId] = dependency;
+    if (dependencyType) {
+      if (dependencyType in this.stackByType) {
+        this.stackByType[dependencyType].push(dependencyId);
+      } else {
+        this.stackByType[dependencyType] = [dependencyId];
+      }
+    }
   };
 
-  public getAllDependenciesOfType = (type: string) => {
-    return [];
+  public getAllDependenciesOfType = (type: string): TDependency[] => {
+    return Object.values(pick(this.stack, this.stackByType[type] || []));
   };
 }

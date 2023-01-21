@@ -1,13 +1,13 @@
 import { flatten, uniq } from 'lodash';
 import { DEPENDENCY_TYPE, MODULE_TYPE, MetadataService } from './metadata';
-import { IModule, IStone, TDependency, TModuleOptions } from './types';
+import { IModule, IStone, TDependency, TModuleOptionDefinitions } from './types';
 
 const excludedDependencyOptions = ['exports', 'imports'];
 
 export class Scanner {
   public scanForAllDependencies(
     rootModule: IModule,
-    moduleOptions: TModuleOptions,
+    moduleOptions: TModuleOptionDefinitions,
   ): Array<IModule | IStone> {
     const allModules = this.scanForAllModules(rootModule);
 

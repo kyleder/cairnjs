@@ -12,6 +12,7 @@
     "lib": ["esnext"],
     "types": ["node", "jest"],
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "jsx": "react-jsx"
   },
   "include": ["**/src/**/*.ts", "**/src/**/*.tsx"]
