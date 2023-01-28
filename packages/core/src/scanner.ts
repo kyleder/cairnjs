@@ -8,7 +8,7 @@ export class Scanner {
   public scanForAllDependencies(
     rootModule: IModule,
     moduleOptions: TModuleOptionDefinitions,
-  ): Array<IModule | IStone> {
+  ): Array<IStone> {
     const allModules = this.scanForAllModules(rootModule);
 
     const optionsToCheck = Object.keys(moduleOptions).filter(
@@ -34,19 +34,22 @@ export class Scanner {
     }, []);
   }
 
-  private scanForAllModules(module: TDependency): IModule[] {
+  public scanForAllModules(module: TDependency): IModule[] {
     if (!this.isModule(module)) {
       return [];
     }
 
     const importedDependencies = MetadataService.getMetadata(module, 'imports') || [];
 
-    return importedDependencies.reduce(
+    const modules = importedDependencies.reduce(
       (allDependencies: TDependency[], dependency: TDependency) => {
         return uniq(flatten([...allDependencies, ...this.scanForAllModules(dependency)]));
       },
-      [module],
+      [],
     );
+    // Append the root module to the end of the list so that it is initialized last.
+    modules.push(module);
+    return modules;
   }
 
   public isModule(module: TDependency): boolean {

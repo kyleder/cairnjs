@@ -1,17 +1,72 @@
-import { pick } from 'lodash';
-import { DEPENDENCY_TYPE, MetadataService, MODULE_OPTIONS } from './metadata';
+import { Container, injectable, interfaces } from 'inversify';
+import {
+  DEPENDENCY_ID,
+  DEPENDENCY_TYPE,
+  MetadataService,
+  MODULE_OPTIONS,
+  MODULE_TYPE,
+} from './metadata';
 import { Scanner } from './scanner';
 import { IModule, TDependency, TModuleOptionDefinitions } from './types';
 import { Injectable } from './decorators';
-import { UuidService } from './services';
 
 type StackRegistry = {
-  [itemId: string]: TDependency;
+  [itemId: symbol]: TDependency;
 };
 
 type StackRegistryByType = {
-  [type: string]: string[];
+  [type: string]: Symbol[];
 };
+
+type InjectionAssertion = () => void;
+
+function safeStringify(obj: any) {
+  // Note: cache should not be re-used by repeated calls to JSON.stringify.
+  let cache: any[] | null = [];
+  const res = JSON.stringify(
+    obj,
+    (key, value) => {
+      if (typeof value === 'object' && value !== null) {
+        // Duplicate reference found, discard key
+        const displayValue = cache?.includes(value) ? '[Circular Reference!]' : value;
+        // Store value in our collection
+        cache?.push(displayValue);
+        return displayValue;
+      }
+      return value;
+    },
+    2,
+  );
+  cache = null;
+  return res;
+}
+
+function getLogger(stack: CairnStack): interfaces.Middleware {
+  return function logger(planAndResolve: interfaces.Next): interfaces.Next {
+    return (args: interfaces.NextArgs) => {
+      let nextContextInterceptor = args.contextInterceptor;
+      args.contextInterceptor = (context: interfaces.Context) => {
+        if (context.plan.rootRequest.childRequests.length > 0) {
+          const sourceDep = stack.getDependencyDefinitionById(
+            context.plan.rootRequest.target.serviceIdentifier as symbol,
+          );
+
+          const sourceType = MetadataService.getMetadata(sourceDep, DEPENDENCY_TYPE);
+
+          context.plan.rootRequest.childRequests.forEach((request) => {
+            const dep = stack.getDependencyDefinitionById(
+              request.target.serviceIdentifier as symbol,
+            );
+            const depType = MetadataService.getMetadata(dep, DEPENDENCY_TYPE);
+            console.log(sourceType, depType);
+          });
+        }
+        return nextContextInterceptor(context);
+      };
+      return planAndResolve(args);
+    };
+  };
+}
 
 /**
  * The CairnStack is a central registry of the application's dependencies. It is used to find,
@@ -20,24 +75,24 @@ type StackRegistryByType = {
  */
 @Injectable()
 export class CairnStack {
-  private scanner: Scanner;
-  private stack: StackRegistry = {};
-  private stackByType: StackRegistryByType = {};
+  private scanner: Scanner = new Scanner();
+  private container: Container = new Container();
   private rootModule?: IModule;
+  private dependencyByType: StackRegistryByType = {};
+  private dependencyById: StackRegistry = {};
+  private injectionAssertions: InjectionAssertion[] = [];
 
   private moduleOptions = MODULE_OPTIONS;
-
-  constructor() {
-    this.scanner = new Scanner();
-  }
 
   public initialize(rootModule: IModule): void {
     // This is a special case where, in order to make the stack available for injection, it needs
     // to be registered in an abnormal way.
-    this.addDependency(this);
+    // this.addDependency(this);
+    this.container.applyMiddleware(getLogger(this));
     this.rootModule = rootModule;
     this.scan();
-    this.initializeAllDependencies();
+    this.addStackAsDependency();
+    this.initializeAllModules();
   }
 
   /**
@@ -79,24 +134,44 @@ export class CairnStack {
     allDependencies.forEach(this.addDependency);
   }
 
-  private initializeDependency(dependency: TDependency) {}
+  private initializeAllModules(): void {
+    const modules = this.getAllDependenciesOfType(MODULE_TYPE) as IModule[];
+    modules.forEach((module) => {
+      if (module.configure) {
+        module.configure();
+      }
+    });
+  }
 
-  private initializeAllDependencies(): void {}
+  private addStackAsDependency = (): void => {
+    const dependencyId = MetadataService.getMetadata<symbol>(this.constructor, DEPENDENCY_ID);
+    this.container.bind<typeof this>(dependencyId).toConstantValue(this);
+    this.dependencyById[dependencyId] = this.constructor as TDependency;
+  };
 
   private addDependency = (dependency: TDependency): void => {
-    const dependencyId = UuidService.generateUniqueId();
-    const dependencyType = MetadataService.getMetadata(dependency, DEPENDENCY_TYPE);
-    this.stack[dependencyId] = dependency;
-    if (dependencyType) {
-      if (dependencyType in this.stackByType) {
-        this.stackByType[dependencyType].push(dependencyId);
-      } else {
-        this.stackByType[dependencyType] = [dependencyId];
-      }
-    }
+    const dependencyId = MetadataService.getMetadata<symbol>(dependency, DEPENDENCY_ID);
+    const dependencyType = MetadataService.getMetadata<string>(dependency, DEPENDENCY_TYPE);
+    this.dependencyByType[dependencyType] = [
+      ...(this.dependencyByType[dependencyType] || []),
+      dependencyId,
+    ];
+    injectable()(dependency);
+    this.container.bind<typeof dependency>(dependencyId).to(dependency);
+    this.dependencyById[dependencyId] = dependency;
   };
 
+  public getDependencyDefinitionById(itemId: symbol): TDependency {
+    return this.dependencyById[itemId];
+  }
+
   public getAllDependenciesOfType = (type: string): TDependency[] => {
-    return Object.values(pick(this.stack, this.stackByType[type] || []));
+    return (this.dependencyByType[type] || []).map((dependencyId) =>
+      this.container.get<TDependency>(dependencyId as symbol),
+    );
   };
+
+  public registerInjectionAssertion(assertion: InjectionAssertion): void {
+    this.injectionAssertions.push(assertion);
+  }
 }

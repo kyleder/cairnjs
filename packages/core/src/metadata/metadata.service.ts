@@ -9,7 +9,7 @@ export class MetadataServiceStatic {
     Reflect.defineMetadata(key, value, target);
   }
 
-  public getMetadata(target: any, key: string): any {
+  public getMetadata<T>(target: any, key: string): T {
     return Reflect.getMetadata(key, target);
   }
 
