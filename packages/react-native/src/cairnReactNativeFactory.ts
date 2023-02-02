@@ -1,11 +1,14 @@
 import { CairnReactNativeApplication } from './cairnReactNativeApplication';
-import { CairnStack } from '@cairnjs/core';
+import { CairnStack, isImported } from '@cairnjs/core';
 import { ReactNativeDependencyTypes } from './metadata';
 
 class CairnReactNativeFactoryStatic {
   public async create(module: any): Promise<CairnReactNativeApplication> {
     const stack = new CairnStack();
     stack.addModuleDependencyTypes(ReactNativeDependencyTypes);
+
+    // Add the default injection assertions
+    stack.registerInjectionAssertion(isImported);
 
     stack.initialize(module);
 

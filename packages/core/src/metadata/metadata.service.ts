@@ -1,10 +1,4 @@
-import { UuidService } from '../services';
-
 export class MetadataServiceStatic {
-  public generateUniqueId(token: string): string {
-    return UuidService.generateUniqueId();
-  }
-
   public setMetadata(target: any, key: string, value: any): void {
     Reflect.defineMetadata(key, value, target);
   }

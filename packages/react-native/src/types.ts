@@ -11,5 +11,5 @@ export interface IReactNativeModuleMetadata extends IModuleBaseOptions {
 }
 
 export interface IReactNativeModule extends IModule {
-  provideRootComponent?: () => ComponentType<any>;
+  withRootComponent?: () => ComponentType<any>;
 }

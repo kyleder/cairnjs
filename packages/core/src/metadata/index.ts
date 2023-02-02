@@ -11,3 +11,4 @@ export const DEPENDENCY_TYPE = 'cairnjs.type';
 export const DEPENDENCY_ID = 'cairnjs.id';
 export const DEPENDENCY_SCOPE = 'cairnjs.dependency.scope';
 export const DEPENDENCY_IS_GLOBAL = 'cairnjs.isGlobal';
+export const DEPENDENCY_OWNER = 'cairnjs.dependency.owner_module';

@@ -1,9 +1,13 @@
+import {ComponentType} from 'react';
 import {CairnStack, Inject, Module} from '@cairnjs/core';
 import {IReactNativeModule, SCREEN_TYPE} from '@cairnjs/react-native';
 import {EnrollmentModule} from './features/enrollment';
 import {BoulderServerModule} from './gateways/boulderServer';
 import {EnvironmentModule} from './features/environment/environment.module';
 import {EnvironmentVariablesService} from './features/environment/services/environmentVariables.service';
+import {EmptyComponent} from '@cairnjs/react-native';
+
+import App from '../App';
 
 @Module({
   imports: [EnvironmentModule, BoulderServerModule, EnrollmentModule],
@@ -19,5 +23,9 @@ export class AppModule implements IReactNativeModule {
   configure() {
     console.log(this.stack.getAllDependenciesOfType(SCREEN_TYPE));
     console.log(this.envVarSvc.get('yay'));
+  }
+
+  withRootComponent(): ComponentType<any> {
+    return App;
   }
 }

@@ -10,8 +10,7 @@ import {AppModule} from './src/app.module';
 
 async function bootstrap(): Promise<void> {
   const app = await CairnReactNativeFactory.create(AppModule);
-  const rootComponent = app.getApplicationComponent();
-  AppRegistry.registerComponent(appName, () => App);
+  AppRegistry.registerComponent(appName, () => app.getApplicationComponent());
 }
 
 bootstrap().catch((e: unknown) => {
