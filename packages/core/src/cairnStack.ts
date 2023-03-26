@@ -56,6 +56,7 @@ export class CairnStack {
    * @param additionalTypes
    */
   public addModuleDependencyTypes(additionalTypes: TModuleOptionDefinitions = {}): void {
+    console.log(`Adding additional types: ${Object.keys(additionalTypes)}`);
     this.moduleOptions = { ...this.moduleOptions, ...additionalTypes };
   }
 
@@ -89,7 +90,15 @@ export class CairnStack {
   }
 
   private initializeAllModules(): void {
+    const startingDependencyTypesCount = Object.keys(this.moduleOptions).length;
     const modules = this.getAllDependenciesOfType(MODULE_TYPE) as IModule[];
+
+    // After initializing all of the modules then rescan for dependencies to pick up any new types
+    // that might have been registered. A module can defined new dependency types in the constructor
+    if (Object.keys(this.moduleOptions).length - startingDependencyTypesCount > 0) {
+      this.scan();
+    }
+
     modules.forEach((module) => {
       if (module.configure) {
         module.configure();
@@ -105,25 +114,40 @@ export class CairnStack {
 
   private addDependency = (dependency: TDependency): void => {
     const dependencyId = MetadataService.getMetadata<symbol>(dependency, DEPENDENCY_ID);
+    if (dependencyId in this.dependencyDefinitionsById) {
+      return;
+    }
     const dependencyType = MetadataService.getMetadata<string>(dependency, DEPENDENCY_TYPE);
     const dependencyScope = MetadataService.getMetadata<string>(dependency, DEPENDENCY_SCOPE);
+    console.log(dependencyType, dependencyScope);
     this.dependencyByType[dependencyType] = [
       ...(this.dependencyByType[dependencyType] || []),
       dependencyId,
     ];
     injectable()(dependency);
-    const res = this.container.bind(dependencyId).to(dependency);
+    let res: any = this.container.bind(dependencyId);
+
+    if (dependencyScope === Scope.Constant) {
+      res = res.toConstantValue(dependency);
+    } else {
+      res = res.to(dependency);
+    }
 
     // TODO: split this out
     switch (dependencyScope) {
       case Scope.Transient:
+        console.log(dependencyType, 'transient');
         res.inTransientScope();
         break;
       case Scope.Request:
+        console.log(dependencyType, 'request');
         res.inRequestScope();
+        break;
+      case Scope.Constant:
         break;
       case Scope.Singleton:
       default:
+        console.log(dependencyType, 'singleton');
         res.inSingletonScope();
         break;
     }

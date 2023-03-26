@@ -17,10 +17,14 @@ export class Scanner {
 
     return allModules.reduce((allDependencies: TDependency[], module) => {
       let newDependencies = [...allDependencies];
+
+      // Make sure that the module is also included in the list of dependencies
       if (!allDependencies.includes(module)) {
         newDependencies.push(module);
       }
       const moduleMetadataKeys = MetadataService.getMetadataKeys(module);
+
+      // TODO: if an unrecognized option type exists then let the developer know
 
       for (let option of optionsToCheck) {
         if (moduleMetadataKeys.includes(option)) {

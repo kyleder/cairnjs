@@ -1,4 +1,4 @@
-export interface IStone<T = any> extends Function {
-  new (...args: never[]): T;
+export interface IStone {
+  new (...args: never[]): unknown;
   type?: string;
 }

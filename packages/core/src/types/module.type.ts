@@ -18,6 +18,6 @@ export interface IModuleBaseOptions {
   exports?: Array<IStone | IModule>;
 }
 
-export interface IModule extends IStone {
+export interface IModule {
   configure?: (...args: any[]) => void;
 }

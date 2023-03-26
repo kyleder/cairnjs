@@ -3,6 +3,8 @@ import { CairnStack, MODULE_TYPE } from '@cairnjs/core';
 import type { ILoggerService } from '@cairnjs/core';
 import { IReactNativeModule } from './types';
 
+type RootModule = { withRootComponent: () => ComponentType<any> } | undefined;
+
 export class CairnReactNativeApplication {
   private appComponent: ComponentType<any> | null = null;
   private loggers: ILoggerService[] = [];
@@ -27,9 +29,7 @@ export class CairnReactNativeApplication {
 
   private buildAppComponent(): ComponentType<any> {
     const modules = this.stack.getAllDependenciesOfType(MODULE_TYPE) as IReactNativeModule[];
-    const rootModule = modules.find((module) => !!module.withRootComponent) as
-      | { withRootComponent: () => ComponentType<any> }
-      | undefined;
+    const rootModule = modules.find((module) => !!module.withRootComponent) as RootModule;
     if (!rootModule) {
       throw new Error(
         'No root component was found. Please make sure that one of the modules in your application implements the provideRootComponent method.',

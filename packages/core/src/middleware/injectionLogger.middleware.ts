@@ -20,9 +20,9 @@ export function getInjectionLoggerMiddleware(stack: CairnStack): interfaces.Midd
             );
             const dependencyType = MetadataService.getMetadata(dependency, DEPENDENCY_TYPE);
 
-            console.log(
-              `${requestor.name}(${requestorType}), ${dependency.name}(${dependencyType})`,
-            );
+            // console.log(
+            //   `${requestor.name}(${requestorType}), ${dependency.name}(${dependencyType})`,
+            // );
           });
         }
         return nextContextInterceptor(context);

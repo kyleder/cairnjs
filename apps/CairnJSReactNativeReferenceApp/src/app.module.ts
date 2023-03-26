@@ -1,16 +1,24 @@
 import {ComponentType} from 'react';
 import {CairnStack, Inject, Module} from '@cairnjs/core';
-import {IReactNativeModule, SCREEN_TYPE} from '@cairnjs/react-native';
+import {IReactNativeModule} from '@cairnjs/react-native';
+import {
+  ReactNavigationModule,
+  SCREEN_TYPE,
+} from '@cairnjs/module-react-navigation';
 import {EnrollmentModule} from './features/enrollment';
 import {BoulderServerModule} from './gateways/boulderServer';
 import {EnvironmentModule} from './features/environment/environment.module';
 import {EnvironmentVariablesService} from './features/environment/services/environmentVariables.service';
-import {EmptyComponent} from '@cairnjs/react-native';
 
 import App from '../App';
 
 @Module({
-  imports: [EnvironmentModule, BoulderServerModule, EnrollmentModule],
+  imports: [
+    ReactNavigationModule,
+    EnvironmentModule,
+    BoulderServerModule,
+    EnrollmentModule,
+  ],
 })
 export class AppModule implements IReactNativeModule {
   constructor(
